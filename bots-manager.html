@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinClub Re-loadable Bot Engine</title>
+    <style>
+        body {
+            background-color: #080400;
+            color: #ffd700;
+            font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .panel {
+            background: #1a0f00;
+            border: 2px solid #d4af37;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+            max-width: 420px;
+            width: 100%;
+        }
+        .counter {
+            font-size: 28px;
+            color: #fff;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .info {
+            font-size: 13px;
+            color: #d4af37;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+    </style>
+    <script>
+        // हर बार फ्रेश अपलोड पर काउंटर को शून्य (0) से शुरू करने के लिए रिसेट की
+        const storageKey = 'winclub_fresh_bot_counter_' + location.pathname;
+        let botsSent = parseInt(sessionStorage.getItem(storageKey) || '0');
+        const maxBotsTarget = 500; 
+
+        function runFreshBotSimulation() {
+            if (botsSent >= maxBotsTarget) {
+                document.getElementById('enginePanel').innerHTML = `
+                    <h2 style="color: #00ff00; margin-bottom: 10px;">🎉 BATCH COMPLETED!</h2>
+                    <p style="color: #fff; font-size: 14px;">All 500 bots have finished running successfully.</p>
+                    <p style="color: #ff4444; font-weight: bold; margin-top: 15px;">👉 Delete this file now. Upload again whenever you need a new batch!</p>
+                `;
+                return;
+            }
+
+            botsSent++;
+            sessionStorage.setItem(storageKey, botsSent);
+            document.getElementById('countDisplay').innerText = botsSent + " / " + maxBotsTarget;
+
+            // 3s, 5s, 7s, 11s का रैंडम नेचुरल टाइम गैप
+            const randomDelays = [3000, 4500, 6000, 8500, 11000];
+            const currentDelay = randomDelays[Math.floor(Math.random() * randomDelays.length)];
+
+            document.getElementById('timerDisplay').innerText = "Next natural bot hit in: " + (currentDelay / 1000) + "s";
+
+            setTimeout(function() {
+                // बोट को सीधे लाइव index.html पर भेजना
+                window.location.href = "index.html";
+            }, currentDelay);
+        }
+
+        window.onload = function() {
+            runFreshBotSimulation();
+        };
+    </script>
+</head>
+<body>
+    <div class="panel" id="enginePanel">
+        <h3 style="color: #ffd700;">🤖 Re-loadable Bot Engine</h3>
+        <p class="info">Auto-resets on every new upload. Running 500 bots cycle.</p>
+        <div class="counter" id="countDisplay">0 / 500</div>
+        <p id="timerDisplay" class="info" style="color: #00ff00;">Initializing fresh session...</p>
+    </div>
+</body>
+</html>
